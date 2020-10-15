@@ -22,7 +22,7 @@ function time_convert(cr_time){
     var hour= cr_time[1].substring(0,2);
     var minute = cr_time[1].substring(2,4);
     var sec = cr_time[1].substring(4,6);
-    var timeformat = year+"-"+month+"-"+day+"T"+hour+":"+minute+":"+sec;
+    var timeformat = year+"-"+month+"-"+day+"T"+hour+":"+minute+":"+sec+"Z";
     return timeformat
 }
 
