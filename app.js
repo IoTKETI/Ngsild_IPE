@@ -22,7 +22,7 @@ function time_convert(cr_time){
     var hour= cr_time[1].substring(0,2);
     var minute = cr_time[1].substring(2,4);
     var sec = cr_time[1].substring(4,6);
-    var timeformat = year+"-"+month+"-"+day+"T"+hour+":"+minute+":"+sec+"Z";
+    var timeformat = year+"-"+month+"-"+day+"T"+hour+":"+minute+":"+sec;
     return timeformat
 }
 
@@ -240,7 +240,9 @@ function init_resource(){
 
 function mqtt_noti_action(jsonObj, callback) {
     if (jsonObj != null) {
+        var rqi =  JSON.stringify(jsonpath.query(JSON.parse(jsonObj), '$..rqi'));
         var net =  JSON.stringify(jsonpath.query(JSON.parse(jsonObj), '$..net'));
+        var sgnObj =  JSON.stringify(jsonpath.query(JSON.parse(jsonObj), '$..sgn'))
         net=net.replace("\"", "").replace("]", "").replace("[", "").replace("\"", "");
         var path_arr= JSON.stringify(jsonpath.query(JSON.parse(jsonObj),'$..sur'));
         var cinObj= jsonpath.query(JSON.parse(jsonObj),'$..con');
@@ -248,7 +250,6 @@ function mqtt_noti_action(jsonObj, callback) {
 
         var sur = path_arr.split('/');
 
-        // console.log("#####"+cr_time);
         if(net == '3'){
             var cnt_id = sur[2].toLowerCase();
             ngsild_post(cnt_id,cinObj,cr_time);
@@ -306,6 +307,7 @@ function mqtt_noti_action(jsonObj, callback) {
                 }
             }
         }
+        callback(sur, cinObj, rqi, sgnObj.sur);
     }
     else {
         console.log('[mqtt_noti_action] message is not noti');
