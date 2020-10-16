@@ -39,7 +39,7 @@ function ngsild_post(cnt_id,cinObj,cr_time){
             body["modifiedAt"] = ct;
             body["illuminance"]={};
             body["illuminance"].type = "Property";
-            body["illuminance"].value=parseFloat(cinObj[0]);
+            body["illuminance"].value=parseFloat(cinObj.con);
             arr[0] = body;
         }
         else if (cnt_id[0] == 'hum'){
@@ -51,7 +51,7 @@ function ngsild_post(cnt_id,cinObj,cr_time){
             body["modifiedAt"] = ct;
             body["humidity"]={};
             body["humidity"].type = "Property";
-            body["humidity"].value=parseFloat(cinObj[0]);
+            body["humidity"].value=parseFloat(cinObj.con);
             arr[0] = body;
         }
         else if(cnt_id[0] == 'pir'){
@@ -63,7 +63,7 @@ function ngsild_post(cnt_id,cinObj,cr_time){
             body["modifiedAt"] = ct;
             body["PIR"]={};
             body["PIR"].type = "Property";
-            body["PIR"].value=parseFloat(cinObj[0]);
+            body["PIR"].value=parseFloat(cinObj.con);
             arr[0] = body;
         }
         else if(cnt_id[0] == 'temp'){
@@ -75,11 +75,11 @@ function ngsild_post(cnt_id,cinObj,cr_time){
             body["modifiedAt"] = ct;
             body["temperature"]={};
             body["temperature"].type = "Property";
-            if(cinObj[0].length >=4){
-                body["temperature"].value=parseFloat(cinObj[0]);
+            if(cinObj.con.length >=4){
+                body["temperature"].value=parseFloat(cinObj.con);
             }
             else{
-                body["temperature"].value=parseFloat(cinObj[0])+0.1;
+                body["temperature"].value=parseFloat(cinObj.con)+0.1;
             }
             arr[0] = body;
         }
@@ -92,7 +92,7 @@ function ngsild_post(cnt_id,cinObj,cr_time){
             body["modifiedAt"] = ct;
             body["co2"]={};
             body["co2"].type = "Property";
-            body["co2"].value=parseFloat(cinObj[0]);
+            body["co2"].value=parseFloat(cinObj.con);
             arr[0] = body;
         }
         else{
@@ -167,14 +167,18 @@ function on_mqtt_message_recv(topic, message) {
     console.log('receive message: ' + message.toString());
     var topic_arr = topic.split("/");
     if (topic_arr[1] == 'oneM2M' && topic_arr[2] == 'req' && topic_arr[4] == conf.ae.id) {
-        var jsonObj = JSON.parse(JSON.stringify(message.toString()));
+        var jsonObj = JSON.parse(message.toString());
+        if (jsonObj['m2m:rqp'] == null) {
+            jsonObj['m2m:rqp'] = jsonObj;
+        }
+
         mqtt_noti_action(jsonObj, function (path_arr, cinObj, rqi, sur) {
             if (cinObj) {
                 var rsp_topic = '/oneM2M/resp/' + topic_arr[3] + '/' + topic_arr[4] + '/' + topic_arr[5];
 
                 event.emit('upload', sur, cinObj);
 
-                response_mqtt(rsp_topic, '2000', '', conf.ae.id, rqi, '');
+                response_mqtt(rsp_topic, '2001', '', conf.ae.id, rqi, '', topic_arr[5]);
             }
         });
     }
@@ -184,7 +188,6 @@ function on_mqtt_message_recv(topic, message) {
 }
 
 function response_mqtt (rsp_topic, rsc, to, fr, rqi, inpcs) {
-
     var rsp_message = {};
     rsp_message['m2m:rsp'] = {};
     rsp_message['m2m:rsp'].rsc = rsc;
@@ -193,7 +196,7 @@ function response_mqtt (rsp_topic, rsc, to, fr, rqi, inpcs) {
     rsp_message['m2m:rsp'].rqi = rqi;
     rsp_message['m2m:rsp'].pc = inpcs;
 
-    mqtt_client.publish(rsp_topic, JSON.stringify(rsp_message));
+    mqtt_client.publish(rsp_topic, JSON.stringify(rsp_message['m2m:rsp']));
 
     console.log('noti publish -> ' + JSON.stringify(rsp_message));
 
@@ -203,30 +206,30 @@ function init_resource(){
     read_sensor_id_list();
     var sub_ae_parent_path = conf.ae.parent + '/' + conf.ae.name;
     for (var i = 0; i < place_ids.length; i++) {
-        var sub_downlink = sub_ae_parent_path + '/'+ place_ids[i].toLowerCase();
+        var sub_ipe = sub_ae_parent_path + '/'+ place_ids[i].toLowerCase();
         var sub_body = {nu:['mqtt://' + conf.cse.host  +'/'+ conf.ae.id + '?ct=json']};
         var sub_obj = {
             'm2m:sub':
                 {
                     'rn' : "sub_ipe",
-                    'enc': {'net': [3]},
+                    'enc': {'net': [1,2,3,4,5]},
                     'nu' : sub_body.nu,
                     'nct': 2
                 }
         };
-        var sub_path = sub_downlink +'/'+"sub_ipe";
+        var sub_path = sub_ipe +'/'+"sub_ipe";
         var resp_sub = keti_mobius.retrieve_sub(sub_path);
 
         if (resp_sub.code == 200) {
             resp_sub = keti_mobius.delete_res(sub_path);
 
             if (resp_sub.code == 200) {
-                resp_sub = keti_mobius.create_sub(sub_downlink, sub_obj);
+                resp_sub = keti_mobius.create_sub(sub_ipe, sub_obj);
 
             }
         }
         else if (resp_sub.code == 404) {
-            keti_mobius.create_sub(sub_downlink, sub_obj);
+            keti_mobius.create_sub(sub_ipe, sub_obj);
         }
         else{
 
@@ -237,81 +240,105 @@ function init_resource(){
     }
     init_mqtt_client();
 }
+ function parse_sgn(rqi, pc, callback) {
+    if(pc.sgn) {
+        var nmtype = pc['sgn'] != null ? 'short' : 'long';
+        var sgnObj = {};
+        var cinObj = {};
+        sgnObj = pc['sgn'] != null ? pc['sgn'] : pc['singleNotification'];
+
+        if (nmtype === 'long') {
+            console.log('oneM2M spec. define only short name for resource')
+        }
+        else { // 'short'
+            if (sgnObj.sur) {
+                if(sgnObj.sur.charAt(0) != '/') {
+                    sgnObj.sur = '/' + sgnObj.sur;
+                }
+                var path_arr = sgnObj.sur.split('/');
+            }
+
+            if (sgnObj.nev) {
+                if (sgnObj.nev.rep) {
+                    if (sgnObj.nev.rep['m2m:cin']) {
+                        sgnObj.nev.rep.cin = sgnObj.nev.rep['m2m:cin'];
+                        delete sgnObj.nev.rep['m2m:cin'];
+                    }
+
+                    if (sgnObj.nev.rep.cin) {
+                        cinObj = sgnObj.nev.rep.cin;
+                    }
+                    else {
+                        console.log('[mqtt_noti_action] m2m:cin is none');
+                        cinObj = null;
+                    }
+                }
+                else {
+                    console.log('[mqtt_noti_action] rep tag of m2m:sgn.nev is none. m2m:notification format mismatch with oneM2M spec.');
+                    cinObj = null;
+                }
+            }
+            else if (sgnObj.sud) {
+                console.log('[mqtt_noti_action] received notification of verification');
+                cinObj = {};
+                cinObj.sud = sgnObj.sud;
+            }
+            else if (sgnObj.vrq) {
+                console.log('[mqtt_noti_action] received notification of verification');
+                cinObj = {};
+                cinObj.vrq = sgnObj.vrq;
+            }
+
+            else {
+                console.log('[mqtt_noti_action] nev tag of m2m:sgn is none. m2m:notification format mismatch with oneM2M spec.');
+                cinObj = null;
+            }
+        }
+    }
+    else {
+        console.log('[mqtt_noti_action] m2m:sgn tag is none. m2m:notification format mismatch with oneM2M spec.');
+        console.log(pc);
+    }
+
+    callback(path_arr, cinObj, rqi);
+};
 
 function mqtt_noti_action(jsonObj, callback) {
     if (jsonObj != null) {
-        var rqi =  JSON.stringify(jsonpath.query(JSON.parse(jsonObj), '$..rqi'));
-        var net =  JSON.stringify(jsonpath.query(JSON.parse(jsonObj), '$..net'));
-        var sgnObj =  JSON.stringify(jsonpath.query(JSON.parse(jsonObj), '$..sgn'))
-        net=net.replace("\"", "").replace("]", "").replace("[", "").replace("\"", "");
-        var path_arr= JSON.stringify(jsonpath.query(JSON.parse(jsonObj),'$..sur'));
-        var cinObj= jsonpath.query(JSON.parse(jsonObj),'$..con');
-        var cr_time= jsonpath.query(JSON.parse(jsonObj),'$..ct');
-
-        var sur = path_arr.split('/');
-
-        if(net == '3'){
-            var cnt_id = sur[2].toLowerCase();
-            ngsild_post(cnt_id,cinObj,cr_time);
+        var op = (jsonObj['m2m:rqp']['op'] == null) ? '' : jsonObj['m2m:rqp']['op'];
+        var to = (jsonObj['m2m:rqp']['to'] == null) ? '' : jsonObj['m2m:rqp']['to'];
+        var fr = (jsonObj['m2m:rqp']['fr'] == null) ? '' : jsonObj['m2m:rqp']['fr'];
+        var rqi = (jsonObj['m2m:rqp']['rqi'] == null) ? '' : jsonObj['m2m:rqp']['rqi'];
+        var pc = {};
+        pc = (jsonObj['m2m:rqp']['pc'] == null) ? {} : jsonObj['m2m:rqp']['pc'];
+        if(pc['m2m:sgn']) {
+            pc.sgn = {};
+            pc.sgn = pc['m2m:sgn'];
+            delete pc['m2m:sgn'];
         }
-        else if (net == '4'){
-            var cnt_parent_path = conf.ae.parent + '/' + conf.ae.name;
-            var rn =  JSON.stringify(jsonpath.query(JSON.parse(jsonObj), '$..rn'));
-            rn=rn.replace("\"", "").replace("]", "").replace("[", "").replace("\"", "");
-            console.log(rn);
-            var retry_cnt_sensor_obj = {
-                'm2m:cnt':{
-                'rn' : rn
+        parse_sgn(rqi, pc, function(path_arr, cinObj,rqi){
+            if(cinObj) {
+                if(cinObj.sud || cinObj.vrq) {
+                    var resp_topic = '/oneM2M/resp/' + topic_arr[3] + '/' + topic_arr[4] + '/' + topic_arr[5];
+                    // _this.response_mqtt(resp_topic, 2001, '', conf.ae.id, rqi, '', topic_arr[5]);
                 }
-            };
-            var cnt_resp = keti_mobius.create_cnt(cnt_parent_path, retry_cnt_sensor_obj);
-            if (cnt_resp.code == 201 || cnt_resp.code == 409){
-                var cnt2_parent_path = cnt_parent_path +'/'+ rn;
-                var cnt_upobj = {
-                    'm2m:cnt':{
-                    'rn' : "up"
-                    }
-                };
-                var cnt_downobj = {
-                    'm2m:cnt':{
-                    'rn' : "down"
-                    }
-                };
-                var cnt_resp2 = keti_mobius.create_cnt(cnt2_parent_path, cnt_upobj);
-                if(cnt_resp2.code == 201 || cnt_resp2.code == 409){
-                   var cnt_resp3 = keti_mobius.create_cnt(cnt2_parent_path, cnt_downobj);
-                }
-                if(cnt_resp3.code == 201 || cnt_resp3.code == 409 ){
-                    console.log("Container Recreate!");
-                    var sub_parent_path = cnt2_parent_path +'/'+"down";
-                    var sub_body = {nu:['mqtt://' + conf.cse.host  +'/'+ conf.ae.id + '?ct=json']};
-                    var sub_obj = {
-                        'm2m:sub':
-                            {
-                                'rn' : "sub_lora_sensor",
-                                'enc': {'net': [3]},
-                                'nu' : sub_body.nu,
-                                'nct': 2
-                            }
-                    };
-                    var sub_path = sub_parent_path +'/'+"sub_lora_sensor";
-                    var resp_sub = keti_mobius.retrieve_sub(sub_path);
+                else {
+                                console.log('mqtt ' + 'json' + ' notification <----');
+                                var sur = pc.sgn.sur.split('/');
+                                if(pc.sgn.nev.net == '3'){
 
-                    if (resp_sub.code == 200) {
-                        resp_sub = keti_mobius.create_sub(sub_parent_path, sub_obj);
-
-                    }
-                    else if (resp_sub.code == 404) {
-                        keti_mobius.create_sub(sub_parent_path, sub_obj);
-                    }
+                                    var cnt_id = sur[3].toLowerCase();
+                                    var cr_time = pc.sgn.nev.rep.cin.ct;
+                                    ngsild_post(cnt_id,cinObj,cr_time);
+                                }
+                                callback(path_arr, cinObj, rqi, pc.sgn.sur);
                 }
             }
-        }
-        callback(sur, cinObj, rqi, sgnObj.sur);
+        })
     }
     else {
         console.log('[mqtt_noti_action] message is not noti');
     }
 }
 
-setTimeout(init_resource,100)
+setTimeout(init_resource,100);
