@@ -214,7 +214,8 @@ function init_resource(){
                     'rn' : "sub_ipe",
                     'enc': {'net': [1,2,3,4,5]},
                     'nu' : sub_body.nu,
-                    'nct': 2
+                    'nct': 2,
+                    'exc': 0 
                 }
         };
         var sub_path = sub_ipe +'/'+"sub_ipe";
