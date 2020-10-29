@@ -2,102 +2,331 @@ var events = require('events');
 var mqtt = require('mqtt');
 var util = require('util');
 var fs = require('fs');
-var jsonpath = require('jsonpath');
 var place_ids = [];
 var mobius = require('./MobiusConnector').mobius;
 const SENSOR_PLACE_FILE = 'sensor_place.txt';
+var dateFormat = require('dateformat');
 global.conf = require('./conf.js');
+var config_list = require('./placelist.json');
+
 var event = new events.EventEmitter();
 var keti_mobius = new mobius();
 keti_mobius.set_mobius_info(conf.cse.host, conf.cse.port);
 var http = require('http');
 var ngsild_host = '172.20.0.129';
 
+var list_keys = Object.keys(config_list);
+var obj = {};
+obj["filab_01"] = config_list["filab_01"];
+obj["filab_02"] = config_list["filab_02"];
+obj["filab_05"] = config_list["filab_05"];
+obj["filab_06"] = config_list["filab_06"];
+obj["filab_07"] = config_list["filab_07"];
+obj["filab_08"] = config_list["filab_08"];
+obj["filab_09"] = config_list["filab_09"];
+obj["filab_11"] = config_list["filab_11"];
+obj["filab_12"] = config_list["filab_12"];
+obj["filab_13"] = config_list["filab_13"];
+obj["filab_14"] = config_list["filab_14"];
+obj["filab_15"] = config_list["filab_15"];
+obj["filab_16"] = config_list["filab_16"];
 
-function time_convert(cr_time){
-    cr_time = cr_time.toString().split('T');
-    var year = cr_time[0].substring(0,4);
-    var month = cr_time[0].substring(4,6);
-    var day = cr_time[0].substring(6,8);
-    var hour= cr_time[1].substring(0,2);
-    var minute = cr_time[1].substring(2,4);
-    var sec = cr_time[1].substring(4,6);
-    var timeformat = year+"-"+month+"-"+day+"T"+hour+":"+minute+":"+sec;
-    return timeformat
+function timestemp(){
+
+    var date = new Date(Date.now());
+    date = date.toISOString();
+    date = dateFormat(date,"isoUtcDateTime");
+    console.log(date)
+    return date
 }
 
 function ngsild_post(cnt_id,cinObj,cr_time){
-    let body = {}
-    var arr = [];
+    var ct = timestemp();
+
     cnt_id = cnt_id.split('_');
-    if(cnt_id.length >=2){
-        if(cnt_id[0] == 'light'){
-            //Ill
-            var light_id = 'Ill'+cnt_id[2];
-            var ct = time_convert(cr_time);
-            body["id"] = "urn:ngsi-ld:Sensor:Sensor" +cnt_id[2];
-            body["modifiedAt"] = ct;
-            body["illuminance"]={};
-            body["illuminance"].type = "Property";
-            body["illuminance"].value=parseFloat(cinObj.con);
-            arr[0] = body;
-        }
-        else if (cnt_id[0] == 'hum'){
-            //Hum
-            var hum_id = 'Hum'+cnt_id[2];
-            var ct = time_convert(cr_time);
-            // console.log(hum_id+'/'+cinObj+'/'+ct);
-            body["id"] = "urn:ngsi-ld:Sensor:Sensor" +cnt_id[2];
-            body["modifiedAt"] = ct;
-            body["humidity"]={};
-            body["humidity"].type = "Property";
-            body["humidity"].value=parseFloat(cinObj.con);
-            arr[0] = body;
-        }
-        else if(cnt_id[0] == 'pir'){
-            //PIR
-            var pir_id = 'PIR'+cnt_id[2];
-            var ct = time_convert(cr_time);
-            // console.log(pir_id+'/'+cinObj+'/'+ct);
-            body["id"] = "urn:ngsi-ld:Sensor:Sensor" +cnt_id[2];
-            body["modifiedAt"] = ct;
-            body["PIR"]={};
-            body["PIR"].type = "Property";
-            body["PIR"].value=parseFloat(cinObj.con);
-            arr[0] = body;
-        }
-        else if(cnt_id[0] == 'temp'){
-            //Temp
-            var temp_id = 'Temp'+cnt_id[2];
-            var ct = time_convert(cr_time);
-            // console.log(temp_id+'/'+cinObj+'/'+ct);
-            body["id"] = "urn:ngsi-ld:Sensor:Sensor" +cnt_id[2];
-            body["modifiedAt"] = ct;
-            body["temperature"]={};
-            body["temperature"].type = "Property";
-            if(cinObj.con.length >=4){
-                body["temperature"].value=parseFloat(cinObj.con);
+    console.log(cnt_id);
+    if(cnt_id[2] == "01"){
+        obj.filab_01["modifiedAt"] = ct;
+        if(cnt_id[0] == "temp"){
+            if(cinObj.con[3] != '0'){
+                obj.filab_01["temperature"].value=parseFloat(cinObj.con);
             }
             else{
-                body["temperature"].value=parseFloat(cinObj.con)+0.1;
+                obj.filab_01["temperature"].value=parseFloat(cinObj.con)+0.1;
             }
-            arr[0] = body;
         }
-        else if(cnt_id[0] == 'co2'){
-            //Co
-            var co_id = 'Co'+cnt_id[2];
-            var ct = time_convert(cr_time);
-            // console.log(co_id+'/'+cinObj+'/'+ct);
-            body["id"] = "urn:ngsi-ld:Sensor:Sensor" +cnt_id[2];
-            body["modifiedAt"] = ct;
-            body["co2"]={};
-            body["co2"].type = "Property";
-            body["co2"].value=parseFloat(cinObj.con);
-            arr[0] = body;
+        else if(cnt_id[0] == "hum"){
+            obj.filab_01["humidity"].value=parseFloat(cinObj.con);
         }
-        else{
-            console.log("Dose not exist");
+        else if(cnt_id[0] == "light"){
+            obj.filab_01["illuminance"].value=parseFloat(cinObj.con);
         }
+        else if(cnt_id[0] == "pir"){
+            obj.filab_01["pir"].value=parseFloat(cinObj.con);
+        }
+    }
+    if(cnt_id[2] == "02"){
+        obj.filab_02["modifiedAt"] = ct;
+        if(cnt_id[0] == "temp"){
+            if(cinObj.con[3] != '0'){
+                obj.filab_02["temperature"].value=parseFloat(cinObj.con);
+            }
+            else{
+                obj.filab_02["temperature"].value=parseFloat(cinObj.con)+0.1;
+            }
+        }
+        else if(cnt_id[0] == "hum"){
+            obj.filab_02["humidity"].value=parseFloat(cinObj.con);
+        }
+        else if(cnt_id[0] == "light"){
+            obj.filab_02["illuminance"].value=parseFloat(cinObj.con);
+        }
+        else if(cnt_id[0] == "pir"){
+            obj.filab_02["pir"].value=parseFloat(cinObj.con);
+        }
+        else if(cnt_id[0] == "co2"){
+            obj.filab_02["co2"].value=parseFloat(cinObj.con);
+        }
+    }
+    if(cnt_id[2] == "05"){
+        obj.filab_05["modifiedAt"] = ct;
+        if(cnt_id[0] == "temp"){
+            if(cinObj.con[3] != '0'){
+                obj.filab_05["temperature"].value=parseFloat(cinObj.con);
+            }
+            else{
+                obj.filab_05["temperature"].value=parseFloat(cinObj.con)+0.1;
+            }
+        }
+        else if(cnt_id[0] == "hum"){
+            obj.filab_05["humidity"].value=parseFloat(cinObj.con);
+        }
+        else if(cnt_id[0] == "light"){
+            obj.filab_05["illuminance"].value=parseFloat(cinObj.con);
+        }
+        else if(cnt_id[0] == "pir"){
+            obj.filab_05["pir"].value=parseFloat(cinObj.con);
+        }
+    }
+    if(cnt_id[2] == "06"){
+        obj.filab_06["modifiedAt"] = ct;
+        if(cnt_id[0] == "temp"){
+            if(cinObj.con[3] != '0'){
+                obj.filab_06["temperature"].value=parseFloat(cinObj.con);
+            }
+            else{
+                obj.filab_06["temperature"].value=parseFloat(cinObj.con)+0.1;
+            }
+        }
+        else if(cnt_id[0] == "hum"){
+            obj.filab_06["humidity"].value=parseFloat(cinObj.con);
+        }
+        else if(cnt_id[0] == "light"){
+            obj.filab_06["illuminance"].value=parseFloat(cinObj.con);
+        }
+        else if(cnt_id[0] == "pir"){
+            obj.filab_06["pir"].value=parseFloat(cinObj.con);
+        }
+    }
+    if(cnt_id[2] == "07"){
+        obj.filab_07["modifiedAt"] = ct;
+        if(cnt_id[0] == "temp"){
+            if(cinObj.con[3] != '0'){
+                obj.filab_07["temperature"].value=parseFloat(cinObj.con);
+            }
+            else{
+                obj.filab_07["temperature"].value=parseFloat(cinObj.con)+0.1;
+            }
+        }
+        else if(cnt_id[0] == "hum"){
+            obj.filab_07["humidity"].value=parseFloat(cinObj.con);
+        }
+        else if(cnt_id[0] == "light"){
+            obj.filab_07["illuminance"].value=parseFloat(cinObj.con);
+        }
+        else if(cnt_id[0] == "pir"){
+            obj.filab_07["pir"].value=parseFloat(cinObj.con);
+        }
+    }
+    if(cnt_id[2] == "08"){
+        obj.filab_08["modifiedAt"] = ct;
+        if(cnt_id[0] == "temp"){
+            if(cinObj.con[3] != '0'){
+                obj.filab_08["temperature"].value=parseFloat(cinObj.con);
+            }
+            else{
+                obj.filab_08["temperature"].value=parseFloat(cinObj.con)+0.1;
+            }
+        }
+        else if(cnt_id[0] == "hum"){
+            obj.filab_08["humidity"].value=parseFloat(cinObj.con);
+        }
+        else if(cnt_id[0] == "light"){
+            obj.filab_08["illuminance"].value=parseFloat(cinObj.con);
+        }
+        else if(cnt_id[0] == "pir"){
+            obj.filab_08["pir"].value=parseFloat(cinObj.con);
+        }
+    }
+    if(cnt_id[2] == "09"){
+        obj.filab_09["modifiedAt"] = ct;
+        if(cnt_id[0] == "temp"){
+            if(cinObj.con[3] != '0'){
+                obj.filab_09["temperature"].value=parseFloat(cinObj.con);
+            }
+            else{
+                obj.filab_09["temperature"].value=parseFloat(cinObj.con)+0.1;
+            }
+        }
+        else if(cnt_id[0] == "hum"){
+            obj.filab_09["humidity"].value=parseFloat(cinObj.con);
+        }
+        else if(cnt_id[0] == "light"){
+            obj.filab_09["illuminance"].value=parseFloat(cinObj.con);
+        }
+        else if(cnt_id[0] == "pir"){
+            obj.filab_09["pir"].value=parseFloat(cinObj.con);
+        }
+        else if(cnt_id[0] == "co2"){
+            obj.filab_09["co2"].value=parseFloat(cinObj.con);
+        }
+    }
+    if(cnt_id[2] == "11"){
+        obj.filab_11["modifiedAt"] = ct;
+        if(cnt_id[0] == "temp"){
+            if(cinObj.con[3] != '0'){
+                obj.filab_11["temperature"].value=parseFloat(cinObj.con);
+            }
+            else{
+                obj.filab_11["temperature"].value=parseFloat(cinObj.con)+0.1;
+            }
+        }
+        else if(cnt_id[0] == "hum"){
+            obj.filab_11["humidity"].value=parseFloat(cinObj.con);
+        }
+        else if(cnt_id[0] == "light"){
+            obj.filab_11["illuminance"].value=parseFloat(cinObj.con);
+        }
+        else if(cnt_id[0] == "pir"){
+            obj.filab_11["pir"].value=parseFloat(cinObj.con);
+        }
+    }
+    if(cnt_id[2] == "12"){
+        obj.filab_12["modifiedAt"] = ct;
+        if(cnt_id[0] == "temp"){
+            if(cinObj.con[3] != '0'){
+                obj.filab_12["temperature"].value=parseFloat(cinObj.con);
+            }
+            else{
+                obj.filab_12["temperature"].value=parseFloat(cinObj.con)+0.1;
+            }
+        }
+        else if(cnt_id[0] == "hum"){
+            obj.filab_12["humidity"].value=parseFloat(cinObj.con);
+        }
+        else if(cnt_id[0] == "light"){
+            obj.filab_12["illuminance"].value=parseFloat(cinObj.con);
+        }
+        else if(cnt_id[0] == "pir"){
+            obj.filab_12["pir"].value=parseFloat(cinObj.con);
+        }
+        else if(cnt_id[0] == "co2"){
+            obj.filab_12["co2"].value=parseFloat(cinObj.con);
+        }
+    }
+    if(cnt_id[2] == "13"){
+        obj.filab_13["modifiedAt"] = ct;
+        if(cnt_id[0] == "temp"){
+            if(cinObj.con[3] != '0'){
+                obj.filab_13["temperature"].value=parseFloat(cinObj.con);
+            }
+            else{
+                obj.filab_13["temperature"].value=parseFloat(cinObj.con)+0.1;
+            }
+        }
+        else if(cnt_id[0] == "hum"){
+            obj.filab_13["humidity"].value=parseFloat(cinObj.con);
+        }
+        else if(cnt_id[0] == "light"){
+            obj.filab_13["illuminance"].value=parseFloat(cinObj.con);
+        }
+        else if(cnt_id[0] == "pir"){
+            obj.filab_13["pir"].value=parseFloat(cinObj.con);
+        }
+    }
+    if(cnt_id[2] == "14"){
+        obj.filab_14["modifiedAt"] = ct;
+        if(cnt_id[0] == "temp"){
+            if(cinObj.con[3] != '0'){
+                obj.filab_14["temperature"].value=parseFloat(cinObj.con);
+            }
+            else{
+                obj.filab_14["temperature"].value=parseFloat(cinObj.con)+0.1;
+            }
+        }
+        else if(cnt_id[0] == "hum"){
+            obj.filab_14["humidity"].value=parseFloat(cinObj.con);
+        }
+        else if(cnt_id[0] == "light"){
+            obj.filab_14["illuminance"].value=parseFloat(cinObj.con);
+        }
+        else if(cnt_id[0] == "pir"){
+            obj.filab_14["pir"].value=parseFloat(cinObj.con);
+        }
+    }
+    if(cnt_id[2] == "15"){
+        obj.filab_15["modifiedAt"] = ct;
+        if(cnt_id[0] == "temp"){
+            if(cinObj.con[3] != '0'){
+                obj.filab_15["temperature"].value=parseFloat(cinObj.con);
+            }
+            else{
+                obj.filab_15["temperature"].value=parseFloat(cinObj.con)+0.1;
+            }
+        }
+        else if(cnt_id[0] == "hum"){
+            obj.filab_15["humidity"].value=parseFloat(cinObj.con);
+        }
+        else if(cnt_id[0] == "light"){
+            obj.filab_15["illuminance"].value=parseFloat(cinObj.con);
+        }
+        else if(cnt_id[0] == "pir"){
+            obj.filab_15["pir"].value=parseFloat(cinObj.con);
+        }
+    }
+    if(cnt_id[2] == "16"){
+        obj.filab_16["modifiedAt"] = ct;
+        if(cnt_id[0] == "temp"){
+            if(cinObj.con[3] != '0'){
+                obj.filab_16["temperature"].value=parseFloat(cinObj.con);
+            }
+            else{
+                obj.filab_16["temperature"].value=parseFloat(cinObj.con)+0.1;
+            }
+        }
+        else if(cnt_id[0] == "hum"){
+            obj.filab_16["humidity"].value=parseFloat(cinObj.con);
+        }
+        else if(cnt_id[0] == "light"){
+            obj.filab_16["illuminance"].value=parseFloat(cinObj.con);
+        }
+        else if(cnt_id[0] == "pir"){
+            obj.filab_16["pir"].value=parseFloat(cinObj.con);
+        }
+    }
+    // console.log(obj);
+
+}
+
+setInterval(function(){
+    filab_upload();
+}, 300000);
+
+function filab_upload(){
+    var arr = []
+    for(var i = 0; i< list_keys.length; i++){
+        arr[0] = obj[list_keys[i]];
+        console.lo
         var payload_message = JSON.stringify(arr);
         console.log(payload_message);
         var options = {
@@ -119,8 +348,8 @@ function ngsild_post(cnt_id,cinObj,cr_time){
         });
         post_req.write(payload_message);
         post_req.end();
+        }
     }
-}
 
 function read_sensor_id_list(){
     var str = String(fs.readFileSync(SENSOR_PLACE_FILE));

@@ -1,0 +1,274 @@
+{
+  "filab_01": {
+    "id": "urn:ngsi-ld:Sensor:Sensor01",
+    "modifiedAt": "2020-10-15T07:27:50Z",
+    "temperature": {
+      "type": "Property",
+      "value": 19.10
+    },
+    "humidity": {
+      "type": "Property",
+      "value": 23
+    },
+    "illuminance": {
+      "type": "Property",
+      "value": 370.13
+    },
+    "pir": {
+      "type": "Property",
+      "value": 0
+    }
+  },
+  "filab_02": {
+    "id": "urn:ngsi-ld:Sensor:Sensor02",
+    "modifiedAt": "2020-10-15T07:27:50Z",
+    "temperature": {
+      "type": "Property",
+      "value": 19.10
+    },
+    "humidity": {
+      "type": "Property",
+      "value": 23
+    },
+    "illuminance": {
+      "type": "Property",
+      "value": 370.13
+    },
+    "pir": {
+      "type": "Property",
+      "value": 0
+    },
+    "co2": {
+      "type": "Property",
+      "value": 3500
+    }
+  },
+  "filab_05": {
+    "id": "urn:ngsi-ld:Sensor:Sensor05",
+    "modifiedAt": "2020-10-15T07:27:50Z",
+    "temperature": {
+      "type": "Property",
+      "value": 19.10
+    },
+    "humidity": {
+      "type": "Property",
+      "value": 23
+    },
+    "illuminance": {
+      "type": "Property",
+      "value": 370.13
+    },
+    "pir": {
+      "type": "Property",
+      "value": 0
+    }
+  },
+  "filab_06": {
+    "id": "urn:ngsi-ld:Sensor:Sensor06",
+    "modifiedAt": "2020-10-15T07:27:50Z",
+    "temperature": {
+      "type": "Property",
+      "value": 19.10
+    },
+    "humidity": {
+      "type": "Property",
+      "value": 23
+    },
+    "illuminance": {
+      "type": "Property",
+      "value": 370.13
+    },
+    "pir": {
+      "type": "Property",
+      "value": 0
+    }
+  },
+  "filab_07": {
+    "id": "urn:ngsi-ld:Sensor:Sensor07",
+    "modifiedAt": "2020-10-15T07:27:50Z",
+    "temperature": {
+      "type": "Property",
+      "value": 19.10
+    },
+    "humidity": {
+      "type": "Property",
+      "value": 23
+    },
+    "illuminance": {
+      "type": "Property",
+      "value": 370.13
+    },
+    "pir": {
+      "type": "Property",
+      "value": 0
+    }
+  },
+  "filab_08": {
+    "id": "urn:ngsi-ld:Sensor:Sensor08",
+    "modifiedAt": "2020-10-15T07:27:50Z",
+    "temperature": {
+      "type": "Property",
+      "value": 19.10
+    },
+    "humidity": {
+      "type": "Property",
+      "value": 23
+    },
+    "illuminance": {
+      "type": "Property",
+      "value": 370.13
+    },
+    "pir": {
+      "type": "Property",
+      "value": 0
+    }
+  },
+  "filab_09": {
+    "id": "urn:ngsi-ld:Sensor:Sensor09",
+    "modifiedAt": "2020-10-15T07:27:50Z",
+    "temperature": {
+      "type": "Property",
+      "value": 19.10
+    },
+    "humidity": {
+      "type": "Property",
+      "value": 23
+    },
+    "illuminance": {
+      "type": "Property",
+      "value": 370.13
+    },
+    "pir": {
+      "type": "Property",
+      "value": 0
+    },
+    "co2": {
+      "type": "Property",
+      "value": 3500
+    }
+  },
+  "filab_11": {
+    "id": "urn:ngsi-ld:Sensor:Sensor11",
+    "modifiedAt": "2020-10-15T07:27:50Z",
+    "temperature": {
+      "type": "Property",
+      "value": 19.10
+    },
+    "humidity": {
+      "type": "Property",
+      "value": 23
+    },
+    "illuminance": {
+      "type": "Property",
+      "value": 370.13
+    },
+    "pir": {
+      "type": "Property",
+      "value": 0
+    }
+  },
+  "filab_12": {
+    "id": "urn:ngsi-ld:Sensor:Sensor12",
+    "modifiedAt": "2020-10-15T07:27:50Z",
+    "temperature": {
+      "type": "Property",
+      "value": 19.10
+    },
+    "humidity": {
+      "type": "Property",
+      "value": 23
+    },
+    "illuminance": {
+      "type": "Property",
+      "value": 370.13
+    },
+    "pir": {
+      "type": "Property",
+      "value": 0
+    },
+    "co2": {
+      "type": "Property",
+      "value": 3500
+    }
+  },
+  "filab_13": {
+    "id": "urn:ngsi-ld:Sensor:Sensor13",
+    "modifiedAt": "2020-10-15T07:27:50Z",
+    "temperature": {
+      "type": "Property",
+      "value": 19.10
+    },
+    "humidity": {
+      "type": "Property",
+      "value": 23
+    },
+    "illuminance": {
+      "type": "Property",
+      "value": 370.13
+    },
+    "pir": {
+      "type": "Property",
+      "value": 0
+    }
+  },
+  "filab_14": {
+    "id": "urn:ngsi-ld:Sensor:Sensor14",
+    "modifiedAt": "2020-10-15T07:27:50Z",
+    "temperature": {
+      "type": "Property",
+      "value": 19.10
+    },
+    "humidity": {
+      "type": "Property",
+      "value": 23
+    },
+    "illuminance": {
+      "type": "Property",
+      "value": 370.13
+    },
+    "pir": {
+      "type": "Property",
+      "value": 0
+    }
+  },
+  "filab_15": {
+    "id": "urn:ngsi-ld:Sensor:Sensor15",
+    "modifiedAt": "2020-10-15T07:27:50Z",
+    "temperature": {
+      "type": "Property",
+      "value": 19.10
+    },
+    "humidity": {
+      "type": "Property",
+      "value": 23
+    },
+    "illuminance": {
+      "type": "Property",
+      "value": 370.13
+    },
+    "pir": {
+      "type": "Property",
+      "value": 0
+    }
+  },
+  "filab_16": {
+    "id": "urn:ngsi-ld:Sensor:Sensor16",
+    "modifiedAt": "2020-10-15T07:27:50Z",
+    "temperature": {
+      "type": "Property",
+      "value": 19.10
+    },
+    "humidity": {
+      "type": "Property",
+      "value": 23
+    },
+    "illuminance": {
+      "type": "Property",
+      "value": 370.13
+    },
+    "pir": {
+      "type": "Property",
+      "value": 0
+    }
+  }
+}
