@@ -59,12 +59,7 @@ function ngsild_post(cnt_id,cinObj,cr_time){
             obj.filab_01["humidity"].value=parseFloat(cinObj.con);
         }
         else if(cnt_id[0] == "light"){
-            if(cinObj.con[4] != '0'){
-                obj.filab_01["illuminance"].value=parseFloat(cinObj.con);
-            }
-            else{
-                obj.filab_01["illuminance"].value=parseFloat(cinObj.con)+0.1;
-            }
+            obj.filab_01["illuminance"].value=parseFloat(cinObj.con);
         }
         else if(cnt_id[0] == "pir"){
             obj.filab_01["pir"].value=parseFloat(cinObj.con);
@@ -84,12 +79,7 @@ function ngsild_post(cnt_id,cinObj,cr_time){
             obj.filab_02["humidity"].value=parseFloat(cinObj.con);
         }
         else if(cnt_id[0] == "light"){
-            if(cinObj.con[4] != '0'){
-                obj.filab_02["illuminance"].value=parseFloat(cinObj.con);
-            }
-            else{
-                obj.filab_02["illuminance"].value=parseFloat(cinObj.con)+0.1;
-            }
+            obj.filab_02["illuminance"].value=parseFloat(cinObj.con);
         }
         else if(cnt_id[0] == "pir"){
             obj.filab_02["pir"].value=parseFloat(cinObj.con);
@@ -112,12 +102,7 @@ function ngsild_post(cnt_id,cinObj,cr_time){
             obj.filab_05["humidity"].value=parseFloat(cinObj.con);
         }
         else if(cnt_id[0] == "light"){
-            if(cinObj.con[4] != '0'){
-                obj.filab_05["illuminance"].value=parseFloat(cinObj.con);
-            }
-            else{
-                obj.filab_05["illuminance"].value=parseFloat(cinObj.con)+0.1;
-            }
+            obj.filab_05["illuminance"].value=parseFloat(cinObj.con);
         }
         else if(cnt_id[0] == "pir"){
             obj.filab_05["pir"].value=parseFloat(cinObj.con);
@@ -137,12 +122,7 @@ function ngsild_post(cnt_id,cinObj,cr_time){
             obj.filab_06["humidity"].value=parseFloat(cinObj.con);
         }
         else if(cnt_id[0] == "light"){
-            if(cinObj.con[4] != '0'){
-                obj.filab_06["illuminance"].value=parseFloat(cinObj.con);
-            }
-            else{
-                obj.filab_06["illuminance"].value=parseFloat(cinObj.con)+0.1;
-            }
+            obj.filab_06["illuminance"].value=parseFloat(cinObj.con);
         }
         else if(cnt_id[0] == "pir"){
             obj.filab_06["pir"].value=parseFloat(cinObj.con);
@@ -162,12 +142,7 @@ function ngsild_post(cnt_id,cinObj,cr_time){
             obj.filab_07["humidity"].value=parseFloat(cinObj.con);
         }
         else if(cnt_id[0] == "light"){
-            if(cinObj.con[4] != '0'){
-                obj.filab_07["illuminance"].value=parseFloat(cinObj.con);
-            }
-            else{
-                obj.filab_07["illuminance"].value=parseFloat(cinObj.con)+0.1;
-            }
+            obj.filab_07["illuminance"].value=parseFloat(cinObj.con);
         }
         else if(cnt_id[0] == "pir"){
             obj.filab_07["pir"].value=parseFloat(cinObj.con);
@@ -187,12 +162,7 @@ function ngsild_post(cnt_id,cinObj,cr_time){
             obj.filab_08["humidity"].value=parseFloat(cinObj.con);
         }
         else if(cnt_id[0] == "light"){
-            if(cinObj.con[4] != '0'){
-                obj.filab_08["illuminance"].value=parseFloat(cinObj.con);
-            }
-            else{
-                obj.filab_08["illuminance"].value=parseFloat(cinObj.con)+0.1;
-            }
+            obj.filab_08["illuminance"].value=parseFloat(cinObj.con);
         }
         else if(cnt_id[0] == "pir"){
             obj.filab_08["pir"].value=parseFloat(cinObj.con);
@@ -212,18 +182,16 @@ function ngsild_post(cnt_id,cinObj,cr_time){
             obj.filab_09["humidity"].value=parseFloat(cinObj.con);
         }
         else if(cnt_id[0] == "light"){
-            if(cinObj.con[4] != '0'){
-                obj.filab_09["illuminance"].value=parseFloat(cinObj.con);
-            }
-            else{
-                obj.filab_09["illuminance"].value=parseFloat(cinObj.con)+0.1;
-            }
+            obj.filab_09["illuminance"].value=parseFloat(cinObj.con);
         }
         else if(cnt_id[0] == "pir"){
             obj.filab_09["pir"].value=parseFloat(cinObj.con);
         }
         else if(cnt_id[0] == "co2"){
             obj.filab_09["co2"].value=parseFloat(cinObj.con);
+        }
+        else if(cnt_id[0] == "sound"){
+            obj.filab_09["noise"].value=parseFloat(cinObj.con)+0.1;
         }
     }
     if(cnt_id[2] == "11"){
@@ -240,15 +208,13 @@ function ngsild_post(cnt_id,cinObj,cr_time){
             obj.filab_11["humidity"].value=parseFloat(cinObj.con);
         }
         else if(cnt_id[0] == "light"){
-            if(cinObj.con[4] != '0'){
-                obj.filab_11["illuminance"].value=parseFloat(cinObj.con);
-            }
-            else{
-                obj.filab_11["illuminance"].value=parseFloat(cinObj.con)+0.1;
-            }
+            obj.filab_11["illuminance"].value=parseFloat(cinObj.con);
         }
         else if(cnt_id[0] == "pir"){
             obj.filab_11["pir"].value=parseFloat(cinObj.con);
+        }
+        else if(cnt_id[0] == "sound"){
+            obj.filab_11["noise"].value=parseFloat(cinObj.con)+0.1;
         }
     }
     if(cnt_id[2] == "12"){
@@ -265,12 +231,7 @@ function ngsild_post(cnt_id,cinObj,cr_time){
             obj.filab_12["humidity"].value=parseFloat(cinObj.con);
         }
         else if(cnt_id[0] == "light"){
-            if(cinObj.con[4] != '0'){
-                obj.filab_12["illuminance"].value=parseFloat(cinObj.con);
-            }
-            else{
-                obj.filab_12["illuminance"].value=parseFloat(cinObj.con)+0.1;
-            }
+            obj.filab_12["illuminance"].value=parseFloat(cinObj.con);
         }
         else if(cnt_id[0] == "pir"){
             obj.filab_12["pir"].value=parseFloat(cinObj.con);
@@ -293,12 +254,7 @@ function ngsild_post(cnt_id,cinObj,cr_time){
             obj.filab_13["humidity"].value=parseFloat(cinObj.con);
         }
         else if(cnt_id[0] == "light"){
-            if(cinObj.con[4] != '0'){
-                obj.filab_13["illuminance"].value=parseFloat(cinObj.con);
-            }
-            else{
-                obj.filab_13["illuminance"].value=parseFloat(cinObj.con)+0.1;
-            }
+            obj.filab_13["illuminance"].value=parseFloat(cinObj.con);
         }
         else if(cnt_id[0] == "pir"){
             obj.filab_13["pir"].value=parseFloat(cinObj.con);
@@ -318,15 +274,13 @@ function ngsild_post(cnt_id,cinObj,cr_time){
             obj.filab_14["humidity"].value=parseFloat(cinObj.con);
         }
         else if(cnt_id[0] == "light"){
-            if(cinObj.con[4] != '0'){
-                obj.filab_14["illuminance"].value=parseFloat(cinObj.con);
-            }
-            else{
-                obj.filab_14["illuminance"].value=parseFloat(cinObj.con)+0.1;
-            }
+            obj.filab_14["illuminance"].value=parseFloat(cinObj.con);
         }
         else if(cnt_id[0] == "pir"){
             obj.filab_14["pir"].value=parseFloat(cinObj.con);
+        }
+        else if(cnt_id[0] == "sound"){
+            obj.filab_14["noise"].value=parseFloat(cinObj.con)+0.1;
         }
     }
     if(cnt_id[2] == "15"){
@@ -343,15 +297,13 @@ function ngsild_post(cnt_id,cinObj,cr_time){
             obj.filab_15["humidity"].value=parseFloat(cinObj.con);
         }
         else if(cnt_id[0] == "light"){
-            if(cinObj.con[4] != '0'){
-                obj.filab_15["illuminance"].value=parseFloat(cinObj.con);
-            }
-            else{
-                obj.filab_15["illuminance"].value=parseFloat(cinObj.con)+0.1;
-            }
+            obj.filab_15["illuminance"].value=parseFloat(cinObj.con);
         }
         else if(cnt_id[0] == "pir"){
             obj.filab_15["pir"].value=parseFloat(cinObj.con);
+        }
+        else if(cnt_id[0] == "sound"){
+            obj.filab_15["noise"].value=parseFloat(cinObj.con)+0.1;
         }
     }
     if(cnt_id[2] == "16"){
@@ -368,19 +320,16 @@ function ngsild_post(cnt_id,cinObj,cr_time){
             obj.filab_16["humidity"].value=parseFloat(cinObj.con);
         }
         else if(cnt_id[0] == "light"){
-            if(cinObj.con[4] != '0'){
-                obj.filab_16["illuminance"].value=parseFloat(cinObj.con);
-            }
-            else{
-                obj.filab_16["illuminance"].value=parseFloat(cinObj.con)+0.1;
-            }
+            obj.filab_16["illuminance"].value=parseFloat(cinObj.con);
         }
         else if(cnt_id[0] == "pir"){
             obj.filab_16["pir"].value=parseFloat(cinObj.con);
         }
+        else if(cnt_id[0] == "sound"){
+            obj.filab_16["noise"].value=parseFloat(cinObj.con)+0.1;
+        }
     }
-    // console.log(obj);
-
+    console.log(obj);
 }
 
 setInterval(function(){
@@ -618,15 +567,15 @@ function mqtt_noti_action(jsonObj, callback) {
                     // _this.response_mqtt(resp_topic, 2001, '', conf.ae.id, rqi, '', topic_arr[5]);
                 }
                 else {
-                                console.log('mqtt ' + 'json' + ' notification <----');
-                                var sur = pc.sgn.sur.split('/');
-                                if(pc.sgn.nev.net == '3'){
+                        console.log('mqtt ' + 'json' + ' notification <----');
+                        var sur = pc.sgn.sur.split('/');
+                        if(pc.sgn.nev.net == '3'){
 
-                                    var cnt_id = sur[3].toLowerCase();
-                                    var cr_time = pc.sgn.nev.rep.cin.ct;
-                                    ngsild_post(cnt_id,cinObj,cr_time);
-                                }
-                                callback(path_arr, cinObj, rqi, pc.sgn.sur);
+                            var cnt_id = sur[3].toLowerCase();
+                            var cr_time = pc.sgn.nev.rep.cin.ct;
+                            ngsild_post(cnt_id,cinObj,cr_time);
+                        }
+                        callback(path_arr, cinObj, rqi, pc.sgn.sur);
                 }
             }
         })
