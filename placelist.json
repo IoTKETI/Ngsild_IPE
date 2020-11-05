@@ -145,10 +145,6 @@
     "co2": {
       "type": "Property",
       "value": 3500
-    },
-    "noise": {
-      "type": "Property",
-      "value": 0.1
     }
   },
   "filab_11": {
@@ -197,6 +193,10 @@
     "co2": {
       "type": "Property",
       "value": 3500
+    },
+    "noise": {
+      "type": "Property",
+      "value": 0.1
     }
   },
   "filab_13": {
@@ -217,6 +217,10 @@
     "pir": {
       "type": "Property",
       "value": 0
+    },
+    "noise": {
+      "type": "Property",
+      "value": 0.1
     }
   },
   "filab_14": {
@@ -285,10 +289,6 @@
     "pir": {
       "type": "Property",
       "value": 0
-    },
-    "noise": {
-      "type": "Property",
-      "value": 0.1
     }
   }
 }
