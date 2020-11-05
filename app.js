@@ -430,6 +430,8 @@ function on_mqtt_message_recv(topic, message) {
     }
 }
 
+
+
 function response_mqtt (rsp_topic, rsc, to, fr, rqi, inpcs) {
     var rsp_message = {};
     rsp_message['m2m:rsp'] = {};
@@ -445,11 +447,23 @@ function response_mqtt (rsp_topic, rsc, to, fr, rqi, inpcs) {
 
 }
 
+function parse_cin_Data (get_data){
+    var parse_data = get_data["body"];
+    parse_data = JSON.parse(parse_data);
+    console.log(parse_data["m2m:cin"]);
+    parse_data = parse_data["m2m:cin"];
+    return parse_data
+}
+
 function init_resource(){
     read_sensor_id_list();
-    var sub_ae_parent_path = conf.ae.parent + '/' + conf.ae.name;
+    var ae_parent_path = conf.ae.parent + '/' + conf.ae.name;
     for (var i = 0; i < place_ids.length; i++) {
-        var sub_ipe = sub_ae_parent_path + '/'+ place_ids[i].toLowerCase();
+        var get_data_path = ae_parent_path + '/' + place_ids[i].toLowerCase(); + '/la';
+        var get_data = keti_mobius.retrieve_latest_cin(get_data_path)
+        get_data = parse_cin_Data(get_data);
+        ngsild_post(place_ids[i].toLowerCase(),get_data);
+        var sub_ipe = ae_parent_path + '/'+ place_ids[i].toLowerCase();
         var sub_body = {nu:['mqtt://' + conf.cse.host  +'/'+ conf.ae.id + '?ct=json']};
         var sub_obj = {
             'm2m:sub':
