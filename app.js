@@ -210,7 +210,7 @@ function ngsild_post(cnt_id,cinObj,cr_time){
         else if(cnt_id[0] == "pir"){
             obj.filab_11["pir"].value=parseFloat(cinObj.con);
         }
-        else if(cnt_id[0] == "sound"){
+        else if(cnt_id[0] == "noise"){
             obj.filab_11["noise"].value=parseFloat(cinObj.con)+0.1;
         }
     }
@@ -236,7 +236,7 @@ function ngsild_post(cnt_id,cinObj,cr_time){
         else if(cnt_id[0] == "co2"){
             obj.filab_12["co2"].value=parseFloat(cinObj.con);
         }
-        else if(cnt_id[0] == "sound"){
+        else if(cnt_id[0] == "noise"){
             obj.filab_12["noise"].value=parseFloat(cinObj.con)+0.1;
         }
     }
@@ -259,7 +259,7 @@ function ngsild_post(cnt_id,cinObj,cr_time){
         else if(cnt_id[0] == "pir"){
             obj.filab_13["pir"].value=parseFloat(cinObj.con);
         }
-        else if(cnt_id[0] == "sound"){
+        else if(cnt_id[0] == "noise"){
             obj.filab_13["noise"].value=parseFloat(cinObj.con)+0.1;
         }
     }
@@ -282,7 +282,7 @@ function ngsild_post(cnt_id,cinObj,cr_time){
         else if(cnt_id[0] == "pir"){
             obj.filab_14["pir"].value=parseFloat(cinObj.con);
         }
-        else if(cnt_id[0] == "sound"){
+        else if(cnt_id[0] == "noise"){
             obj.filab_14["noise"].value=parseFloat(cinObj.con)+0.1;
         }
     }
@@ -305,7 +305,7 @@ function ngsild_post(cnt_id,cinObj,cr_time){
         else if(cnt_id[0] == "pir"){
             obj.filab_15["pir"].value=parseFloat(cinObj.con);
         }
-        else if(cnt_id[0] == "sound"){
+        else if(cnt_id[0] == "noise"){
             obj.filab_15["noise"].value=parseFloat(cinObj.con)+0.1;
         }
     }
