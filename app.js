@@ -461,6 +461,7 @@ function init_resource(){
     for (var i = 0; i < place_ids.length; i++) {
         var get_data_path = ae_parent_path + '/' + place_ids[i].toLowerCase(); + '/la';
         var get_data = keti_mobius.retrieve_latest_cin(get_data_path)
+        console.log(get_data)
         get_data = parse_cin_Data(get_data);
         ngsild_post(place_ids[i].toLowerCase(),get_data);
         var sub_ipe = ae_parent_path + '/'+ place_ids[i].toLowerCase();
