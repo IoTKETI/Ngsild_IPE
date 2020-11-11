@@ -1,4 +1,12 @@
 {
+  "filab_00": {
+    "id": "urn:ngsi-ld:Sensor:Sensor00",
+    "modifiedAt": "2020-10-15T07:27:50Z",
+    "door": {
+      "type": "Property",
+      "value": 0
+    }
+  },
   "filab_01": {
     "id": "urn:ngsi-ld:Sensor:Sensor01",
     "modifiedAt": "2020-10-15T07:27:50Z",

@@ -1,3 +1,4 @@
+{"id":"door_filab_00"},
 {"id":"light_filab_01"},
 {"id":"pir_filab_01"},
 {"id":"temp_filab_01"},

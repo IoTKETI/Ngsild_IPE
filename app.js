@@ -17,6 +17,7 @@ var ngsild_host = '172.20.0.129';
 
 var list_keys = Object.keys(config_list);
 var obj = {};
+obj["filab_00"] = config_list["filab_00"];
 obj["filab_01"] = config_list["filab_01"];
 obj["filab_02"] = config_list["filab_02"];
 obj["filab_05"] = config_list["filab_05"];
@@ -45,6 +46,14 @@ function ngsild_post(cnt_id,cinObj,cr_time){
 
     cnt_id = cnt_id.split('_');
     console.log(cnt_id);
+    if(cnt_id[2] == "00"){
+        obj.filab_00["modifiedAt"] = ct;
+        if(cnt_id[0] == "door"){
+            if(cinObj.con[3] != '0'){
+                obj.filab_00["door"].value=parseFloat(cinObj.con);
+            }
+        }
+    }
     if(cnt_id[2] == "01"){
         obj.filab_01["modifiedAt"] = ct;
         if(cnt_id[0] == "temp"){
