@@ -17,7 +17,8 @@ var ngsild_host = '172.20.0.129';
 
 var list_keys = Object.keys(config_list);
 var obj = {};
-obj["filab_00"] = config_list["filab_00"];
+var door_obj = {};
+door_obj["filab_00"] = config_list["filab_00"];
 obj["filab_01"] = config_list["filab_01"];
 obj["filab_02"] = config_list["filab_02"];
 obj["filab_05"] = config_list["filab_05"];
@@ -41,19 +42,45 @@ function timestemp(){
     return date
 }
 
-function ngsild_post(cnt_id,cinObj,cr_time){
+function door_obj_parse(cnt_id,cinObj){
+    var ct = timestemp();
+    var door_arr = [];
+    if(cnt_id[2] == "00"){
+        door_obj.filab_00["modifiedAt"] = ct;
+        if(cnt_id[0] == "door"){
+                door_obj.filab_00["door"].value=parseFloat(cinObj.con);
+        }
+    }
+        door_arr[0] = door_obj["filab_00"];
+        var payload_message = JSON.stringify(door_arr);
+        console.log(payload_message);
+        var options = {
+            'method': 'POST',
+            'host': ngsild_host,
+            'port': 8080,
+            'path': '/entityOperations/update',
+
+            'headers': {
+                'Content-Type': 'application/json',
+                'Content-Length': Buffer.byteLength(payload_message)
+            }
+        };
+        var post_req = http.request(options, function(res) {
+            res.setEncoding('utf8');
+            res.on('data', function (chunk) {
+                console.log('Response: ' + chunk);
+            });
+        });
+        post_req.write(payload_message);
+        post_req.end();
+}
+
+function ngsild_obj_parse(cnt_id,cinObj,cr_time){
     var ct = timestemp();
 
     cnt_id = cnt_id.split('_');
     console.log(cnt_id);
-    if(cnt_id[2] == "00"){
-        obj.filab_00["modifiedAt"] = ct;
-        if(cnt_id[0] == "door"){
-            if(cinObj.con[3] != '0'){
-                obj.filab_00["door"].value=parseFloat(cinObj.con);
-            }
-        }
-    }
+
     if(cnt_id[2] == "01"){
         obj.filab_01["modifiedAt"] = ct;
         if(cnt_id[0] == "temp"){
@@ -345,11 +372,11 @@ setInterval(function(){
     filab_upload();
 }, 300000);
 
+
 function filab_upload(){
-    var arr = []
+    var arr = [];
     for(var i = 0; i< list_keys.length; i++){
         arr[0] = obj[list_keys[i]];
-        console.lo
         var payload_message = JSON.stringify(arr);
         console.log(payload_message);
         var options = {
@@ -372,7 +399,7 @@ function filab_upload(){
         post_req.write(payload_message);
         post_req.end();
         }
-    }
+}
 
 function read_sensor_id_list(){
     var str = String(fs.readFileSync(SENSOR_PLACE_FILE));
@@ -472,7 +499,7 @@ function init_resource(){
         var get_data = keti_mobius.retrieve_latest_cin(get_data_path)
         console.log(get_data)
         get_data = parse_cin_Data(get_data);
-        ngsild_post(place_ids[i].toLowerCase(),get_data);
+        ngsild_obj_parse(place_ids[i].toLowerCase(),get_data);
         var sub_ipe = ae_parent_path + '/'+ place_ids[i].toLowerCase();
         var sub_body = {nu:['mqtt://' + conf.cse.host  +'/'+ conf.ae.id + '?ct=json']};
         var sub_obj = {
@@ -596,8 +623,14 @@ function mqtt_noti_action(jsonObj, callback) {
                         if(pc.sgn.nev.net == '3'){
 
                             var cnt_id = sur[3].toLowerCase();
-                            var cr_time = pc.sgn.nev.rep.cin.ct;
-                            ngsild_post(cnt_id,cinObj,cr_time);
+                            find_door = cnt_id.split('_');
+                            if(find_door[0] == 'door'){
+                                door_obj_parse(find_door,cinObj);
+                            }
+                            else{
+                                var cr_time = pc.sgn.nev.rep.cin.ct;
+                                ngsild_obj_parse(cnt_id,cinObj,cr_time);
+                            }
                         }
                         callback(path_arr, cinObj, rqi, pc.sgn.sur);
                 }
